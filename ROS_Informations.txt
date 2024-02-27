@@ -19,3 +19,8 @@ Alias;
 	2. alias cw='cd ~/catkin_ws'
 	3. alias cs='cd ~/catkin_ws/src'
 	4. alias cm='cd ~/catkin_ws && catkin_make'
+rospack list;
+	1. rospack list
+	2. rospack find turtlesim
+	3. roscd turtlesim
+	4. rosls 
