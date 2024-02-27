@@ -23,4 +23,8 @@ rospack list;
 	1. rospack list
 	2. rospack find turtlesim
 	3. roscd turtlesim
-	4. rosls 
+	4. rosls turtlesim
+rosrun and rosnode;
+	1. roscore
+	2. rosrun package_name node_name (running a node)
+	3. rosnode command gives some information related to nodes
