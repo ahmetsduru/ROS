@@ -14,3 +14,8 @@ Creating package;
 	5. catkin_make
 	6. showing the main dependencies: rospack depends1 package_name (in the catkin_ws)
 	7. showing all dependencies: rospack depends package_name
+Alias;
+	1. gedit ~/.bashrc
+	2. alias cw='cd ~/catkin_ws'
+	3. alias cs='cd ~/catkin_ws/src'
+	4. alias cm='cd ~/catkin_ws && catkin_make'
