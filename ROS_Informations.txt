@@ -1,0 +1,6 @@
+Creating work space;
+	1. mkdir -p catkin_ws/src
+	2. cd catkin_ws
+	3. catkin_make
+	4. gedit ~/.bashrc
+		bottom line -> /home/ahmet/catkin_ws/devel/setup.bash
