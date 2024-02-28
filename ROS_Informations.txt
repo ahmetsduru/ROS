@@ -14,17 +14,38 @@ Creating package;
 	5. catkin_make
 	6. showing the main dependencies: rospack depends1 package_name (in the catkin_ws)
 	7. showing all dependencies: rospack depends package_name
+
 Alias;
 	1. gedit ~/.bashrc
 	2. alias cw='cd ~/catkin_ws'
 	3. alias cs='cd ~/catkin_ws/src'
 	4. alias cm='cd ~/catkin_ws && catkin_make'
+
 rospack list;
 	1. rospack list
 	2. rospack find turtlesim
 	3. roscd turtlesim
 	4. rosls turtlesim
+
 rosrun and rosnode;
 	1. roscore
 	2. rosrun package_name node_name (running a node)
 	3. rosnode command gives some information related to nodes
+
+rostopic;
+	1. Several topic options can be reached by using rostopic command
+	
+rosservice;
+	1 Several service options can be reached by using rosservice command
+	
+rosparam;
+	1. Several parameter options can be adjusted by using rosparam command 
+rosmsg;
+rossrv;
+rqt;
+rqt_graph;
+rqt_plot;
+	
+	
+	
+	
