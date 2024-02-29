@@ -1,0 +1,200 @@
+1- Create a work space;
+	mkdir -p catkin_ws/src
+	cd catkin_ws/
+	catkin_make -> build
+**source devel/setup.bash
+**vim ~/.bashrc
+**/home/ahmet/catkin_ws/devel/setup.bash
+
+2- Create a package;
+	cd src/
+	**catkin_create_pkg package_name roscpp rospy std_msgs sensor_msgs
+	catkin_make (cd /home/ahmet/catkin_ws)
+
+3- Create a node
+	in package_name mkdir scripts
+	in scripts node_name.py
+	chmod +x node_name.py
+		write your code to node_name.py
+**rospack depends1 package_name //main dependencies
+**rospack depends package_name //all dependencies
+
+4- We can add shortcuts for changing directory by using alias (~/.bashrc)
+	
+5- roscore+rosrun turtlesim turtlesim_node
+   rosrun turtlesim turtle_teleop_key
+rospack list
+rospack find turtlesim
+roscd turtlesim //cd
+rosls //to list a director
+rosed turtlesim //editing a package
+
+roscore -> run master
+rosrun -> run node
+rosnode -> node commands
+
+rostopic -> topic commands
+rostopic info /turtle1/cmd_vel
+rostopic pub /turtle1/cmd_vel geometry_msgs/Twist "linear:
+rostopic pub /turtle1/cmd_vel geometry_msgs/Twist -r 1 "linear: -> infinity
+
+rosservice
+
+rosparam
+rosparam get /background_g
+rosparam get /background_g 165
+rosservice call /clear -> update
+rosparam dump test.yaml -> save parameters
+rosparam load test.yaml
+rosparam get / -> show preferences
+
+rosmsg
+rosmsg package turtlesim
+rosmsg packages
+
+rossrv
+
+rosbag
+**/home/ahmet/catkin_ws/src/package_name
+***mkdir bagfiles
+rosbag record turtle1/cmd_vel ->recording
+rosbag play bagfilename
+
+6- ROS Dosya Sistemi;
+
+/bin -> Yürütülebilir binary dosyalar
+/include -> Header dosyaları
+/etc -> ROS ve catkin ile ilgili yapılandırma dosyaları
+/lib -> Kütüphane dosyaları
+/share -> ROS paketleri
+
+/build -> Derleme ile ilgili dosyalar
+/devel -> msg,srv,header dosyaları, kullanıcı paketi kütüphanesi, yürütme dos.
+/src -> Kullanıcı paketleri
+** /home/ahmet/catkin_ws/src/package_name/
+***/include -> Header dosyaları
+***/launch -> Launch dosyaları
+***/node -> roscpp için scriptler
+***/msg -> msg dosyaları
+***/src -> kaynak kod dosyaları
+***/srv -> srv dosyaları
+***/action -> action dosyaları
+***CMakeLists.txt
+
+***package.xml
+********Not: buildtool -> derleme sisteminin bağımlılıklarını tanımlarken kullanılır
+	     build_depend -> paketin derlenme bağımlılıklarını kontrol için kullanılır
+	     build_export_depend -> 
+	     exec_depend -> paketin çalışma bağımlılıklarını tanımlıyor 
+	     depend -> bu şekilde tanımlanırsa tüm özellikler verilmiş olur
+	     
+6- Create msg folder
+/home/ahmet/catkin_ws/src/package_name/msg
+**dizine msg dosyalarını oluşturup kaydedin.
+**package.xml dosyasından dependencies ler tanımlanır;
+***<exec_depend>message_runtime</exec_depend>
+***<build_depend>message_generation</build_depend>
+**CMakeLists.txt dosyasında düzenlemeler yapılır;
+***find_package + message_generation
+***add_message_files + name of msg files
+***generate_messages -> only activate 
+***catkin_package -> activate and + message_runtime
+http://docs.ros.org/en/jade/api/catkin/html/howto/format2/building_msgs.html
+
+catkin_make
+	     
+7- Publisher;
+
+/home/ahmet/catkin_ws/src/package_name/src
+touch publisher.cpp or create with vim 
+
+code;
+#include "ros/ros.h"
+#include "first_ros_package/zaman.h"
+
+int main(int argc, char **argv)
+{
+        ros::init(argc,argv, "publisher"); // Başlatacağımız node
+        ros::NodeHandle nh; //nh isimli obje, nodeler arasındaki haberleşme için 
+        ros::Publisher objetopic = nh.advertise<first_ros_package::zaman>("msg_time",100);// topic oluşturma (publisher nodelerde topic advertise ile tanımlanılır)
+// msg_time ->topic name  <package_name::msg_file_name>
+        ros::Rate loop_rate(10);
+        first_ros_package::zaman msg; //zaman-> msg dosyası, msg->obje
+        int count=0;
+
+        while (ros::ok())
+        {
+                msg.stamp=ros::Time::now();
+                msg.data=count;
+
+                ROS_INFO("gönderilen mesaj = %d",msg.stamp.sec);
+                ROS_INFO("gönderilen mesaj = %d",msg.data);
+
+                objetopic.publish(msg); // yayın yapma
+
+                loop_rate.sleep();
+                ++count;
+
+        }
+
+
+        return 0;
+
+}
+
+8- Subscriber; 	  
+/home/ahmet/catkin_ws/src/package_name/src
+touch subscriber.cpp or create with vim   
+
+#include "ros/ros.h"
+#include "first_ros_package/zaman.h"
+
+void func(const first_ros_package::zaman::zaman::ConstPtr& msg){
+
+        ROS_INFO("alinan mesaj = %d",msg->stamp.sec);
+        ROS_INFO("alinan mesaj = %d",msg->stamp.nsec);
+        ROS_INFO("alinan mesaj = %d",msg->data);
+}
+
+
+int main(int argc, char **argv)
+{
+        ros::init(argc,argv,"subscriber");
+        ros::NodeHandle nh;
+        ros::Subscriber objetopic=nh.subscribe("msg_time",100,func);
+        // foksiyon içerisinde fonksiyon olduğunda callback oluyor bunun için ros::spin
+        ros::spin();
+
+        return 0;
+}
+
+9- Paket Yapılandırması
+
+**CMakeLists.txt dosyasında düzenlemeler yapılır;
+***find_package + genmsg
+***include_directories altındaki includeyi aktif et
+
+***en alta satır ekle
+****add_executable(publisher src/publisher.cpp)
+****target_link_libraries(publisher ${catkin_LIBRARIES})
+****add_dependencies(publisher first_ros_package_generate_messages_cpp)
+****add_executable(subscriber src/subscriber.cpp)
+****target_link_libraries(subscriber ${catkin_LIBRARIES})
+****add_dependencies(subscriber first_ros_package_generate_messages_cpp)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
